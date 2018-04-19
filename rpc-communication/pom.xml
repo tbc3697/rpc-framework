@@ -17,6 +17,16 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.18.Final</version>
         </dependency>
+        <dependency>
+            <groupId>pub.tbc</groupId>
+            <artifactId>rpc-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>pub.tbc</groupId>
+            <artifactId>rpc-serializer</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 
