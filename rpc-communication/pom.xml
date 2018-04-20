@@ -27,6 +27,11 @@
             <artifactId>rpc-serializer</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>pub.tbc</groupId>
+            <artifactId>rpc-registry</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

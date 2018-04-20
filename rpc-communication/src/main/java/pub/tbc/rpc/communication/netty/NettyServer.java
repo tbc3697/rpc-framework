@@ -1,6 +1,7 @@
 package pub.tbc.rpc.communication.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -9,6 +10,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import pub.tbc.rpc.common.helper.PropertyConfigeHelper;
+import pub.tbc.rpc.common.model.RpcResponse;
+import pub.tbc.rpc.communication.netty.handler.NettyServerInvokerHandler;
+import pub.tbc.rpc.communication.netty.handler.codec.NettyDecoderHandler;
+import pub.tbc.rpc.communication.netty.handler.codec.NettyEncoderHandler;
 import pub.tbc.rpc.framework.serializer.SerializerType;
 
 import static pub.tbc.toolkit.core.EmptyUtil.nonNull;
@@ -46,7 +51,7 @@ public class NettyServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(channelInitializer());
+                    .childHandler(handlerInitializer());
 
             try {
                 b.bind(port).sync().channel();
@@ -57,8 +62,16 @@ public class NettyServer {
         }
     }
 
-    private ChannelInitializer channelInitializer() {
-        return null;
+    private ChannelInitializer handlerInitializer() {
+        return new ChannelInitializer() {
+            @Override
+            protected void initChannel(Channel ch) throws Exception {
+                ch.pipeline()
+                        .addLast(new NettyDecoderHandler(RpcResponse.class, serializerType))
+                        .addLast(new NettyEncoderHandler(serializerType))
+                        .addLast(new NettyServerInvokerHandler());
+            }
+        };
     }
 
     private boolean checkStarted() {

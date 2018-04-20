@@ -1,4 +1,4 @@
-package pub.tbc.rpc.communication.netty.handler;
+package pub.tbc.rpc.communication.netty.handler.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
