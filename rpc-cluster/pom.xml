@@ -11,5 +11,13 @@
 
     <artifactId>rpc-cluster</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>pub.tbc</groupId>
+            <artifactId>rpc-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

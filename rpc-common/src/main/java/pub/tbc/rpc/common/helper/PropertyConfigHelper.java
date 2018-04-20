@@ -1,5 +1,7 @@
 package pub.tbc.rpc.common.helper;
 
+import lombok.Data;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pub.tbc.rpc.framework.serializer.SerializerType;
@@ -11,15 +13,18 @@ import java.util.Properties;
  * @author liyebing created on 17/2/2.
  * @version $Id$
  */
-public class PropertyConfigeHelper {
+public class PropertyConfigHelper {
+    public static void main(String[] args) {
+        System.out.println("a");
+    }
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyConfigeHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertyConfigHelper.class);
 
-    private static final String PROPERTY_CLASSPATH = "/rpc.properties";
+    private static final String PROPERTY_CLASSPATH = "rpc.properties";
     private static final Properties properties = new Properties();
 
     //ZK服务地址
-    private static String zkService = "";
+    private static String zkService;
     //ZK session超时时间
     private static int zkSessionTimeout;
     //ZK connection超时时间
@@ -31,6 +36,10 @@ public class PropertyConfigeHelper {
     // 应用名称
     private static String appName;
 
+    //////////////////////////
+    @Getter
+    private static String loadBalance;
+
 
     /**
      * 初始化
@@ -38,9 +47,9 @@ public class PropertyConfigeHelper {
     static {
         InputStream is = null;
         try {
-            is = PropertyConfigeHelper.class.getResourceAsStream(PROPERTY_CLASSPATH);
+            is = PropertyConfigHelper.class.getResourceAsStream(PROPERTY_CLASSPATH);
             if (null == is) {
-                throw new IllegalStateException("ares_remoting.properties can not found in the classpath.");
+                throw new IllegalStateException("rpc.properties can not found in the classpath.");
             }
             properties.load(is);
 
@@ -55,8 +64,10 @@ public class PropertyConfigeHelper {
             }
             appName = properties.getProperty("app_name");
 
+            loadBalance = properties.getProperty("loadBalance");
+
         } catch (Throwable t) {
-            logger.warn("load ares_remoting's properties file failed.", t);
+            logger.warn("load rpc-framework's properties file failed.", t);
             throw new RuntimeException(t);
         } finally {
             if (null != is) {

@@ -9,7 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import pub.tbc.rpc.common.helper.PropertyConfigeHelper;
+import pub.tbc.rpc.common.helper.PropertyConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
 import pub.tbc.rpc.communication.netty.handler.NettyServerInvokerHandler;
 import pub.tbc.rpc.communication.netty.handler.codec.NettyDecoderHandler;
@@ -29,7 +29,7 @@ public class NettyServer {
     // worker
     private EventLoopGroup workerGroup;
     //
-    private SerializerType serializerType = PropertyConfigeHelper.getSerializeType();
+    private SerializerType serializerType = PropertyConfigHelper.getSerializeType();
 
     public static NettyServer singleton() {
         return nettyServer;

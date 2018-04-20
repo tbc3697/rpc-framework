@@ -21,13 +21,13 @@ public class ProviderService implements Serializable {
     private String serverIp;
     private int serverPort;
     private long timeout;
-    //该服务提供者权重
+    // 该服务提供者权重
     private int weight;
-    //服务端线程数
+    // 服务端线程数
     private int workerThreads;
-    //服务提供者唯一标识
+    // 服务提供者唯一标识
     private String appKey;
-    //服务分组组名
+    // 服务分组组名
     private String groupName;
 
     public ProviderService copy() {

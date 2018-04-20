@@ -7,7 +7,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.ProviderService;
-import pub.tbc.rpc.common.helper.PropertyConfigeHelper;
+import pub.tbc.rpc.common.helper.PropertyConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
 import pub.tbc.rpc.communication.netty.handler.NettyClientInvokerHandler;
 import pub.tbc.rpc.communication.netty.handler.codec.NettyDecoderHandler;
@@ -37,10 +37,10 @@ public class NettyChannelPoolFactory {
     private static final Map<InetSocketAddress, ArrayBlockingQueue<Channel>> channelPoolMap = Maps.newConcurrentHashMap();
 
     //初始化Netty Channel阻塞队列的长度,该值为可配置信息
-    private static final int channelConnectSize = PropertyConfigeHelper.getChannelConnectSize();
+    private static final int channelConnectSize = PropertyConfigHelper.getChannelConnectSize();
 
     //初始化序列化协议类型,该值为可配置信息
-    private static final SerializerType serializeType = PropertyConfigeHelper.getSerializeType();
+    private static final SerializerType serializeType = PropertyConfigHelper.getSerializeType();
 
     //服务提供者列表
     private List<ProviderService> serviceMetaDataList = Lists.newArrayList();

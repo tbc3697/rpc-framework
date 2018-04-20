@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static pub.tbc.rpc.common.helper.PropertyConfigeHelper.*;
-
 /**
  * 注册中心实现
  */

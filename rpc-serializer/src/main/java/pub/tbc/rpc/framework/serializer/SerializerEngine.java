@@ -1,11 +1,10 @@
 package pub.tbc.rpc.framework.serializer;
 
-import pub.tbc.toolkit.core.NullUtil;
 import pub.tbc.toolkit.core.collect.Maps;
 
 import java.util.Map;
 
-import static pub.tbc.toolkit.core.NullUtil.requireNonNull;
+import static pub.tbc.toolkit.core.EmptyUtil.*;
 import static pub.tbc.toolkit.core.exception.ExceptionUtil.noException;
 
 /**
