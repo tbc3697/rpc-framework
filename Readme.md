@@ -24,3 +24,18 @@
     * 管理分组
     * 服务升降级
     * 调用链路跟踪
+
+
+## 技能准备
+* zookeeper
+* spring
+* netty
+* serializer
+* logging
+
+## 目标
+* “约定优于配置”，尽量减少配置项；
+* 注解，使用注解发布和引入服务
+    * 基于spring
+    * 自行实现
+* 日志（slf4j + logback）

@@ -10,5 +10,13 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Inject {
+public @interface RpcInject {
+
+    String version() default "1.0";
+
+    String serviceName() default "";
+
+    int retries() default 0;
+
+    long timeout() default 10000;
 }

@@ -16,7 +16,7 @@ public class IPHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(IPHelper.class);
 
-    private static String hostIp = "";
+    private static String hostIp;
 
 
     /**

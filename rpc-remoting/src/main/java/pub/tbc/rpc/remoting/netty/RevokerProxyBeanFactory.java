@@ -1,5 +1,6 @@
 package pub.tbc.rpc.remoting.netty;
 
+import pub.tbc.rpc.cluster.loadbalance.LoadBalance;
 import pub.tbc.rpc.cluster.loadbalance.LoadBalanceEngine;
 import pub.tbc.rpc.common.ProviderService;
 import pub.tbc.rpc.common.model.RpcRequest;
@@ -49,9 +50,9 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
         List<ProviderService> providerServices = registerCenter4Invoker.getServiceMetaDataMap4Consume().get(serviceKey);
 
         // 选择软负载策略
-        ClusterStrategy clusterStrategyService = LoadBalanceEngine.queryClusterStrategy(clusterStrategy);
+        LoadBalance loadBalance = LoadBalanceEngine.queryClusterStrategy(clusterStrategy);
         // 按软负载策略，从服务提供者列表中选择一个服务提供者
-        ProviderService providerService = clusterStrategyService.select(providerServices);
+        ProviderService providerService = loadBalance.select(providerServices);
 
         // 复制一份服务提供者信息
         ProviderService newProvider = providerService.copy();

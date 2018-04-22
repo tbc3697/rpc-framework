@@ -1,6 +1,6 @@
 package pub.tbc.rpc.cluster.loadbalance;
 
-import pub.tbc.rpc.common.helper.PropertyConfigHelper;
+import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.toolkit.core.EmptyUtil;
 import pub.tbc.toolkit.core.collect.MapBuilder;
 import pub.tbc.rpc.cluster.loadbalance.impl.*;
@@ -26,7 +26,7 @@ public class LoadBalanceEngine {
     }
 
     public static LoadBalance queryClusterStrategy(String clusterStrategy) {
-//        PropertyConfigHelper.getL
+//        RpcConfigHelper.getL
         LoadBalanceEnum clusterStrategyEnum = queryByCode(clusterStrategy);
         if (EmptyUtil.isNull(clusterStrategyEnum)) {
             return clusterStrategyMap.get(RANDOM);
@@ -36,6 +36,6 @@ public class LoadBalanceEngine {
 
     // 从配置中读取负载均衡算法，若为空，则默认使用随机算法
     public static LoadBalance queryClusterStrategy() {
-        return clusterStrategyMap.get(EmptyUtil.orElse(queryByCode(PropertyConfigHelper.getLoadBalance()), RANDOM));
+        return clusterStrategyMap.get(EmptyUtil.orElse(queryByCode(RpcConfigHelper.getLoadBalance()), RANDOM));
     }
 }

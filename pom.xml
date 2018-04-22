@@ -18,12 +18,13 @@
         <module>rpc-admin</module>
         <module>rpc-gateway</module>
         <module>all</module>
+        <module>rpc-example</module>
     </modules>
     <packaging>pom</packaging>
 
 
     <properties>
-        <j.v>1.9</j.v>
+        <j.v>1.8</j.v>
     </properties>
 
     <dependencies>

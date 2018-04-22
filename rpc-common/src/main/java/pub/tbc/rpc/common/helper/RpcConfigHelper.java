@@ -1,10 +1,13 @@
 package pub.tbc.rpc.common.helper;
 
-import lombok.Data;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pub.tbc.rpc.framework.serializer.SerializerType;
+import pub.tbc.toolkit.core.Closes;
+import pub.tbc.toolkit.core.EmptyUtil;
+import pub.tbc.toolkit.core.exception.ExceptionUtil;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -13,14 +16,15 @@ import java.util.Properties;
  * @author liyebing created on 17/2/2.
  * @version $Id$
  */
-public class PropertyConfigHelper {
+public class RpcConfigHelper {
     public static void main(String[] args) {
         System.out.println("a");
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyConfigHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcConfigHelper.class);
 
     private static final String PROPERTY_CLASSPATH = "rpc.properties";
+    private static final String APPLICATION_PROPERTIES = "application.properties";
     private static final Properties properties = new Properties();
 
     //ZK服务地址
@@ -47,9 +51,13 @@ public class PropertyConfigHelper {
     static {
         InputStream is = null;
         try {
-            is = PropertyConfigHelper.class.getResourceAsStream(PROPERTY_CLASSPATH);
+            is = RpcConfigHelper.class.getResourceAsStream(PROPERTY_CLASSPATH);
             if (null == is) {
-                throw new IllegalStateException("rpc.properties can not found in the classpath.");
+                // 如果默认配置文件不存在，查找默认的应用配置文件
+                is = RpcConfigHelper.class.getResourceAsStream(APPLICATION_PROPERTIES);
+                if (EmptyUtil.isNull(is)) {
+                    throw new IllegalStateException("rpc.properties can not found in the classpath.");
+                }
             }
             properties.load(is);
 
@@ -57,26 +65,15 @@ public class PropertyConfigHelper {
             zkSessionTimeout = Integer.parseInt(properties.getProperty("zk_sessionTimeout", "500"));
             zkConnectionTimeout = Integer.parseInt(properties.getProperty("zk_connectionTimeout", "500"));
             channelConnectSize = Integer.parseInt(properties.getProperty("channel_connect_size", "10"));
-            String seriType = properties.getProperty("serialize_type");
-            serializeType = SerializerType.queryByType(seriType);
-            if (serializeType == null) {
-                throw new RuntimeException("serializeType is null");
-            }
+            serializeType = EmptyUtil.requireNonNull(SerializerType.queryByType(properties.getProperty("serialize_type")), "serializeType is null");
             appName = properties.getProperty("app_name");
-
             loadBalance = properties.getProperty("loadBalance");
 
         } catch (Throwable t) {
-            logger.warn("load rpc-framework's properties file failed.", t);
+            logger.warn("load rpc prerequisite properties failed.", t);
             throw new RuntimeException(t);
         } finally {
-            if (null != is) {
-                try {
-                    is.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            Closes.close(is);
         }
     }
 

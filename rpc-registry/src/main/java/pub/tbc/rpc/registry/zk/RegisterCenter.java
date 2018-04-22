@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static pub.tbc.rpc.common.helper.PropertyConfigHelper.getZkConnectionTimeout;
-import static pub.tbc.rpc.common.helper.PropertyConfigHelper.getZkService;
+import static pub.tbc.rpc.common.helper.RpcConfigHelper.getZkConnectionTimeout;
+import static pub.tbc.rpc.common.helper.RpcConfigHelper.getZkService;
 
 /**
  * 注册中心实现
