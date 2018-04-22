@@ -1,4 +1,4 @@
-1. CORE - rpc-common
+1. common-api - rpc-common
     * 公共API
     * 通用工具
     * 配置
@@ -12,9 +12,9 @@
     * spring
 4. 服务的注册与发现 - rpc-registry
     * zookeeper
-5. 通讯 - rpc-communication
+5. 通讯 - rpc-remoting
     * netty
-6. 负载均衡 - rpc-cluster
+6. 负载均衡 - rpc-cluster:loadBalance
     * 随机（加权）、轮洵（加权）、源地址哈希、最小连接数
 7. http网关 - rpc-gateway
 8. 服务管理 - rpc-admin
