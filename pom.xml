@@ -13,7 +13,7 @@
         <module>rpc-test</module>
         <module>rpc-registry</module>
         <module>rpc-common</module>
-        <module>rpc-communication</module>
+        <module>rpc-remoting</module>
         <module>rpc-cluster</module>
         <module>rpc-admin</module>
         <module>rpc-gateway</module>

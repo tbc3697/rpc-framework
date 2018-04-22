@@ -1,6 +1,9 @@
 package pub.tbc.rpc.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -12,6 +15,9 @@ import java.lang.reflect.Method;
  * @version $Id$
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProviderService implements Serializable {
 
     private Class<?> serviceItf;
