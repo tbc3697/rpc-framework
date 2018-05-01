@@ -1,5 +1,7 @@
 package pub.tbc.rpc.framework.serializer;
 
+import pub.tbc.rpc.framework.serializer.jdk.DefaultJavaSerialzer;
+import pub.tbc.rpc.framework.serializer.protostuff.ProtostuffSerializer;
 import pub.tbc.toolkit.core.collect.Maps;
 
 import java.util.Map;
@@ -15,6 +17,9 @@ public class SerializerEngine {
 
     static {
         //
+        serializerMap.put(SerializerType.queryByType("DefaultJavaSerializer"), new DefaultJavaSerialzer());
+        serializerMap.put(SerializerType.queryByType("protostuff"), new ProtostuffSerializer());
+
     }
 
     public static <T> byte[] serialize(T object, String serializerTypeName) {

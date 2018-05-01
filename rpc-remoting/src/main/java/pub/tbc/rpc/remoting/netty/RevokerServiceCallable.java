@@ -41,6 +41,10 @@ public class RevokerServiceCallable implements Callable<RpcResponse> {
         ArrayBlockingQueue<Channel> blockingQueue = NettyChannelPoolFactory.instance().acquire(socketAddress);
 
         try {
+            if (EmptyUtil.isNull(channel)) {
+                // 从队列中获取本次调用的netty通道channel
+                channel = blockingQueue.poll(request.getInvokeTimeout(), TimeUnit.MILLISECONDS);
+            }
             ChannelFuture channelFuture = channel.writeAndFlush(request);
             channelFuture.syncUninterruptibly();
 

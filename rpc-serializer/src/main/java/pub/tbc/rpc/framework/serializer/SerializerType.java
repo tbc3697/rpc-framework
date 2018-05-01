@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Created by tbc on 2018/4/16.
  */
 public enum SerializerType {
-    DEFAULT_JAVA_SERIALIZER("DefaultJavaSerializer");
+    DEFAULT_JAVA_SERIALIZER("DefaultJavaSerializer"), PROTO_STUFF("protostuff");
 
     private String serializerType;
 

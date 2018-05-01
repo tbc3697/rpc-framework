@@ -36,6 +36,7 @@ public class NettyServer {
     }
 
 
+    // 服务有多个，每发布一个服务都要调用该方法，但netty-server只要启动一次，用同步关键字保护，并调用checkStarted方法检查是否已启动
     public void start(int port) {
         synchronized (NettyServer.class) {
             if (checkStarted()) return;

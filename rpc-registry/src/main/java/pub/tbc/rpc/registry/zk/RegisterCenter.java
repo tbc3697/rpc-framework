@@ -41,6 +41,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
     public static String PROVIDER_TYPE = "provider";
     public static String INVOKER_TYPE = "consumer";
     private static volatile ZkClient zkClient = null;
+    private String IP_PATH_SEPRATOR = "\\|";
 
 
     private RegisterCenter() {
@@ -256,11 +257,11 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
             String servicePath = providePath + "/" + serviceName + "/" + PROVIDER_TYPE;
             List<String> ipPathList = zkClient.getChildren(servicePath);
             for (String ipPath : ipPathList) {
-                String serverIp = ipPath.split("|")[0];
-                String serverPort = ipPath.split("|")[1];
-                int weight = Integer.parseInt(ipPath.split("|")[2]);
-                int workerThreads = Integer.parseInt(ipPath.split("|")[3]);
-                String group = ipPath.split("|")[4];
+                String serverIp = ipPath.split(IP_PATH_SEPRATOR)[0];
+                String serverPort = ipPath.split(IP_PATH_SEPRATOR)[1];
+                int weight = Integer.parseInt(ipPath.split(IP_PATH_SEPRATOR)[2]);
+                int workerThreads = Integer.parseInt(ipPath.split(IP_PATH_SEPRATOR)[3]);
+                String group = ipPath.split(IP_PATH_SEPRATOR)[4];
 
                 List<ProviderService> providerServiceList = providerServiceMap.get(serviceName);
                 if (providerServiceList == null) {
@@ -287,7 +288,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
                     if (currentChildren == null) {
                         currentChildren = Lists.newArrayList();
                     }
-                    currentChildren = currentChildren.stream().map(s -> s.split("|")[0]).collect(Collectors.toList());
+                    currentChildren = currentChildren.stream().map(s -> s.split(IP_PATH_SEPRATOR)[0]).collect(Collectors.toList());
                     refreshServiceMetaDataMap(currentChildren);
                 }
             });
@@ -343,7 +344,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
 
                         //获取服务提供者信息
                         for (String provider : providers) {
-                            String[] providerNodeArr = provider.split("|");
+                            String[] providerNodeArr = provider.split(IP_PATH_SEPRATOR);
 
                             ProviderService providerService = new ProviderService();
                             providerService.setAppKey(appKey);

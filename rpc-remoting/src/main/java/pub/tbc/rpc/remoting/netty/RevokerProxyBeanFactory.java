@@ -115,6 +115,6 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
                 }
             }
         }
-        return null;
+        return singleton;
     }
 }

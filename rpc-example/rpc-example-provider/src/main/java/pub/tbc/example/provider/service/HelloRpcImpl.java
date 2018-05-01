@@ -1,5 +1,6 @@
 package pub.tbc.example.provider.service;
 
+import org.springframework.stereotype.Service;
 import pub.tbc.rpc.example.api.service.HelloRpc;
 
 import java.util.Map;
@@ -10,16 +11,16 @@ import java.util.Map;
 public class HelloRpcImpl implements HelloRpc {
     @Override
     public String hi() {
-        return null;
+        return "hi";
     }
 
     @Override
     public String hi(String str) {
-        return null;
+        return "hi, " + str;
     }
 
     @Override
     public String hi(Map<String, String> param) {
-        return null;
+        return "hi, " + param.toString();
     }
 }

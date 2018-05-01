@@ -1,13 +1,11 @@
 package pub.tbc.rpc.common.helper;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pub.tbc.rpc.framework.serializer.SerializerType;
 import pub.tbc.toolkit.core.Closes;
 import pub.tbc.toolkit.core.EmptyUtil;
-import pub.tbc.toolkit.core.exception.ExceptionUtil;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -23,7 +21,7 @@ public class RpcConfigHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcConfigHelper.class);
 
-    private static final String PROPERTY_CLASSPATH = "rpc.properties";
+    private static final String PROPERTY_CLASSPATH = "rpc-simple.properties";
     private static final String APPLICATION_PROPERTIES = "application.properties";
     private static final Properties properties = new Properties();
 
@@ -51,12 +49,12 @@ public class RpcConfigHelper {
     static {
         InputStream is = null;
         try {
-            is = RpcConfigHelper.class.getResourceAsStream(PROPERTY_CLASSPATH);
+            is = RpcConfigHelper.class.getClassLoader().getResourceAsStream(PROPERTY_CLASSPATH);
             if (null == is) {
                 // 如果默认配置文件不存在，查找默认的应用配置文件
-                is = RpcConfigHelper.class.getResourceAsStream(APPLICATION_PROPERTIES);
+                is = RpcConfigHelper.class.getClassLoader().getResourceAsStream(APPLICATION_PROPERTIES);
                 if (EmptyUtil.isNull(is)) {
-                    throw new IllegalStateException("rpc.properties can not found in the classpath.");
+                    throw new IllegalStateException(PROPERTY_CLASSPATH + " can not found in the classpath.");
                 }
             }
             properties.load(is);
@@ -67,10 +65,10 @@ public class RpcConfigHelper {
             channelConnectSize = Integer.parseInt(properties.getProperty("channel_connect_size", "10"));
             serializeType = EmptyUtil.requireNonNull(SerializerType.queryByType(properties.getProperty("serialize_type")), "serializeType is null");
             appName = properties.getProperty("app_name");
-            loadBalance = properties.getProperty("loadBalance");
+            loadBalance = properties.getProperty("load_balance");
 
         } catch (Throwable t) {
-            logger.warn("load rpc prerequisite properties failed.", t);
+            logger.warn("load " + PROPERTY_CLASSPATH + " properties failed.", t);
             throw new RuntimeException(t);
         } finally {
             Closes.close(is);

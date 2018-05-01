@@ -19,6 +19,7 @@
         <module>rpc-gateway</module>
         <module>all</module>
         <module>rpc-example</module>
+        <module>rpc-config</module>
     </modules>
     <packaging>pom</packaging>
 

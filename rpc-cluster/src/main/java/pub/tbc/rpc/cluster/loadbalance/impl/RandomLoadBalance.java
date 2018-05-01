@@ -14,7 +14,7 @@ public class RandomLoadBalance implements LoadBalance {
     @Override
     public ProviderService select(List<ProviderService> providerServices) {
         int MAX_LEN = providerServices.size();
-        int index = new Random().nextInt(MAX_LEN - 1);
+        int index = MAX_LEN > 1 ? new Random().nextInt(MAX_LEN - 1) : 0;
         return providerServices.get(index);
     }
 }

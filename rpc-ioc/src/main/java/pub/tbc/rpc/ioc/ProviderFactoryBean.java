@@ -1,6 +1,9 @@
 package pub.tbc.rpc.ioc;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import pub.tbc.rpc.common.ProviderService;
@@ -17,6 +20,9 @@ import java.util.stream.Collectors;
  * Created by tbc on 2018/4/17.
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProviderFactoryBean implements FactoryBean, InitializingBean {
     // 服务接口类型
     private Class<?> serviceItf;
@@ -70,6 +76,9 @@ public class ProviderFactoryBean implements FactoryBean, InitializingBean {
         registerCenter4Provider.registerProvider(providerServiceList);
     }
 
+    /**
+     * 将服务按方法粒度拆分，获得服务方法粒度的服务列表
+     */
     public List<ProviderService> buildProviderServiceInfoS() {
         return Arrays.stream(serviceObject.getClass().getDeclaredMethods()).map(
                 method ->

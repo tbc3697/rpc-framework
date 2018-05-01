@@ -76,7 +76,7 @@ public class NettyChannelPoolFactory {
      */
     public void initChannelPoolFactory(Map<String, List<ProviderService>> providerMap) {
         // 将服务提供者信息存入 serviceMetaDataList
-        providerMap.values().stream().filter(EmptyUtil::isEmpty).forEach(serviceMetaDataList::addAll);
+        providerMap.values().stream().filter(EmptyUtil::nonEmpty).forEach(serviceMetaDataList::addAll);
 
         // 获取服务提供者地址列表
         Set<InetSocketAddress> socketAddresses = serviceMetaDataList.stream().map(this::newInetSocketAddress).collect(toSet());
