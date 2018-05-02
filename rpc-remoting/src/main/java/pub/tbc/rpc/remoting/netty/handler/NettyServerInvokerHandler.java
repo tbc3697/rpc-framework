@@ -56,7 +56,7 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
      */
     private boolean matchMethod(Method method, String methodName, Class<?>... methodParameters) {
         if (methodName.equals(method.getName())) {
-            if (EmptyUtil.isEmpty(methodParameters) && EmptyUtil.isEmpty(method.getParameterTypes())) {
+            if (methodParameters.length==0 && method.getParameterTypes().length==0) {
                 return true;
             }
             return Arrays.equals(method.getParameterTypes(), methodParameters);
