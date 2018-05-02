@@ -1,4 +1,4 @@
-package pub.tbc.rpc.example.api.service;
+package pub.tbc.rpc.example.api;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

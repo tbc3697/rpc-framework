@@ -9,7 +9,6 @@ import pub.tbc.toolkit.core.collect.MapBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by tbc on 2018/4/17.

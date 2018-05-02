@@ -36,7 +36,7 @@ public class NettyDecoderHandler extends ByteToMessageDecoder {
         }
         in.markReaderIndex();
         int dataLength = in.readInt();
-        if (dataLength < 0) {
+        if (dataLength <= 0) {
             ctx.close();
         }
 

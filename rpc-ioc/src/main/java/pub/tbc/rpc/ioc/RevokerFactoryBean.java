@@ -40,7 +40,7 @@ public class RevokerFactoryBean implements FactoryBean, InitializingBean {
 
 
     @Override
-    public Object getObject() throws Exception {
+    public Object getObject() {
         return serviceObject;
     }
 
@@ -68,7 +68,8 @@ public class RevokerFactoryBean implements FactoryBean, InitializingBean {
         NettyChannelPoolFactory.instance().initChannelPoolFactory(providerMap);
 
         // 获取服务提供者代理对象
-        RevokerProxyBeanFactory proxyBeanFactory = RevokerProxyBeanFactory.singleton(targetInterface, timeout, loadBalanceName);
+//        RevokerProxyBeanFactory proxyBeanFactory = RevokerProxyBeanFactory.singleton(targetInterface, timeout, loadBalanceName);
+        RevokerProxyBeanFactory proxyBeanFactory = RevokerProxyBeanFactory.of(targetInterface, timeout, loadBalanceName);
         this.serviceObject = proxyBeanFactory.getProxy();
 
         // 将消费者信息注册到注册中心

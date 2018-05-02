@@ -109,6 +109,10 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
         );
     }
 
+    public static RevokerProxyBeanFactory of(Class<?> targetInterface, int consumerTimeout, String clusterStrategy) {
+        return new RevokerProxyBeanFactory(targetInterface, consumerTimeout, clusterStrategy);
+    }
+
     private static volatile RevokerProxyBeanFactory singleton;
 
     // 双重锁定单例
@@ -122,4 +126,6 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
         }
         return singleton;
     }
+
+
 }
