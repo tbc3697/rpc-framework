@@ -1,5 +1,6 @@
 package pub.tbc.rpc.remoting.netty;
 
+import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.cluster.loadbalance.LoadBalance;
 import pub.tbc.rpc.cluster.loadbalance.LoadBalanceEngine;
 import pub.tbc.rpc.common.ProviderService;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by tbc on 2018/4/21.
  */
+@Slf4j
 public class RevokerProxyBeanFactory implements InvocationHandler {
     private ExecutorService fixedThreadPool = null;
     // 服务接口
@@ -93,6 +95,7 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
             }
 
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new RuntimeException(e);
         }
         return null;

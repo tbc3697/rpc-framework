@@ -56,8 +56,8 @@ public class RpcConfigHelper {
             properties.load(is);
 
             zkService = properties.getProperty("zk_service");
-            zkSessionTimeout = Integer.parseInt(properties.getProperty("zk_sessionTimeout", "500"));
-            zkConnectionTimeout = Integer.parseInt(properties.getProperty("zk_connectionTimeout", "500"));
+            zkSessionTimeout = Integer.parseInt(properties.getProperty("zk_sessionTimeout", "5000"));
+            zkConnectionTimeout = Integer.parseInt(properties.getProperty("zk_connectionTimeout", "2000"));
             channelConnectSize = Integer.parseInt(properties.getProperty("channel_connect_size", "10"));
             serializeType = EmptyUtil.requireNonNull(SerializerType.queryByType(properties.getProperty("serialize_type")), "serializeType is null");
             appName = properties.getProperty("app_name");
