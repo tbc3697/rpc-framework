@@ -1,4 +1,4 @@
-package pub.tbc.example.provider.service;
+package pub.tbc.rpc.example.api.service;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -27,7 +27,7 @@ public class LoggerManager {
         LayoutWrappingEncoder encoder = (LayoutWrappingEncoder) console.getEncoder();
 
         PatternLayout layout = new PatternLayout();
-        layout.setPattern("%d{yyyy-MM-dd HH:mm:ss} [%-8thread] [%-5level] %logger{36} - %msg%n");
+        layout.setPattern("%d{yyyy-MM-dd HH:mm:ss} [%-9thread] [%-5level] %logger{36} - %msg%n");
 
         encoder.setLayout(layout);
 

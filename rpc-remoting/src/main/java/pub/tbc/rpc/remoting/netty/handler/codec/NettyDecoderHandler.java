@@ -28,7 +28,8 @@ public class NettyDecoderHandler extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        log.debug("准备反序列化[解码]...");
         // 获取消息头中标识的消息体字节数组长度
         if (in.readableBytes() < 4) {
             return;
@@ -52,5 +53,6 @@ public class NettyDecoderHandler extends ByteToMessageDecoder {
         // 反序列化
         Object object = SerializerEngine.deserialize(data, genericClass, serializerType.getSerializerType());
         out.add(object);
+        log.debug("反序列化[解码]完成: {}", object);
     }
 }

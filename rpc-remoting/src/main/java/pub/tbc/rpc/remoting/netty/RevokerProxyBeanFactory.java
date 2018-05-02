@@ -63,7 +63,7 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
         // 构造Request对象
         RpcRequest request = RpcRequest.builder()
                 .uniqueKey(UUID.randomUUID().toString() + "-" + Thread.currentThread().getId())
-                .providerService(providerService)
+                .providerService(newProvider)
                 .invokeTimeout(timeout)
                 .invokedMethodName(method.getName())
                 .args(args)

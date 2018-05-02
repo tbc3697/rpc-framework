@@ -46,7 +46,7 @@ public class NettyChannelPoolFactory {
     private List<ProviderService> serviceMetaDataList = Lists.newArrayList();
 
     public static NettyChannelPoolFactory instance() {
-        log.debug("获取NettyChannelPoolFactory实例: NettyChannelPoolFactory:{}", Thread.currentThread().getStackTrace()[0].getMethodName());
+        log.debug("获取NettyChannelPoolFactory实例: NettyChannelPoolFactory:{}", Thread.currentThread().getStackTrace()[1].getMethodName());
         return channelPoolFactory;
     }
 

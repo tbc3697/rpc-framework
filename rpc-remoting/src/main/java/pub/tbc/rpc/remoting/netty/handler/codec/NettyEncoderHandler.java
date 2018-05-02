@@ -20,7 +20,8 @@ public class NettyEncoderHandler extends MessageToByteEncoder {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) {
+        log.debug("准备序列化[编码]: {}", msg);
         // 序列化
         byte[] data = SerializerEngine.serialize(msg, serializerType.getSerializerType());
 

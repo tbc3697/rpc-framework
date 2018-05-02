@@ -5,6 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pub.tbc.rpc.example.api.service.HelloRpc;
+import pub.tbc.rpc.example.api.service.LoggerManager;
 import pub.tbc.rpc.ioc.ProviderFactoryBean;
 
 /**
@@ -12,7 +13,7 @@ import pub.tbc.rpc.ioc.ProviderFactoryBean;
  */
 @Slf4j
 @Configuration
-public class Test {
+public class ProviderExample {
     public static void main(String[] args) {
         LoggerManager.logSetting();
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("pub.tbc.example.provider.service");

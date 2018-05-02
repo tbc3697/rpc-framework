@@ -16,7 +16,8 @@ public class NettyClientInvokerHandler extends SimpleChannelInboundHandler<RpcRe
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse response) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse response) {
+        log.info("收到服务器响应： {}, msg: {} ", ctx.channel().remoteAddress(), response);
         // 将netty异步返回的结果存入阻塞队列，以便调用端同步获取
         RevokerResponseHolder.putResultValue(response);
     }

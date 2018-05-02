@@ -88,6 +88,7 @@ public class ProviderFactoryBean implements FactoryBean, InitializingBean {
                         ProviderService.builder()
                                 .serviceItf(serviceItf)
                                 .serviceObject(serviceObject)
+                                .serviceMethod(method)
                                 .serverIp(IPHelper.localIp())
                                 .serverPort(Integer.parseInt(serverPort))
                                 .timeout(timeout)

@@ -1,5 +1,6 @@
 package pub.tbc.rpc.registry.zk;
 
+import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
@@ -26,6 +27,7 @@ import static pub.tbc.rpc.common.helper.RpcConfigHelper.getZkService;
 /**
  * 注册中心实现
  */
+@Slf4j
 public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4Provider, IRegisterCenter4Governance {
     private static RegisterCenter registerCenter = new RegisterCenter();
 
@@ -41,7 +43,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
     public static String PROVIDER_TYPE = "provider";
     public static String INVOKER_TYPE = "consumer";
     private static volatile ZkClient zkClient = null;
-    private String IP_PATH_SEPRATOR = "\\|";
+    private String IP_PATH_SEPARATE = "\\|";
 
 
     private RegisterCenter() {
@@ -106,18 +108,15 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
                 }
 
                 //监听注册服务的变化,同时更新数据到本地缓存
-                zkClient.subscribeChildChanges(servicePath, new IZkChildListener() {
-                    @Override
-                    public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-                        if (currentChilds == null) {
-                            currentChilds = Lists.newArrayList();
-                        }
-
-                        //存活的服务IP列表
-                        List<String> activityServiceIpList = currentChilds.stream().map(input -> input.split("|")[0]).collect(Collectors.toList());
-
-                        refreshActivityService(activityServiceIpList);
+                zkClient.subscribeChildChanges(servicePath, (parentPath, currentChildren) -> {
+                    if (currentChildren == null) {
+                        currentChildren = Lists.newArrayList();
                     }
+
+                    //存活的服务IP列表
+                    List<String> activityServiceIpList = currentChildren.stream().map(input -> input.split(IP_PATH_SEPARATE)[0]).collect(Collectors.toList());
+
+                    refreshActivityService(activityServiceIpList);
                 });
 
             }
@@ -132,6 +131,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
 
     @Override
     public void initProviderMap(String remoteAppKey, String groupName) {
+        log.debug("初始化服务提供者列表");
         if (EmptyUtil.isEmpty(serviceMetaDataMap4Consume)) {
             serviceMetaDataMap4Consume.putAll(fetchOrUpdateServiceMetaData(remoteAppKey, groupName));
         }
@@ -257,11 +257,11 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
             String servicePath = providePath + "/" + serviceName + "/" + PROVIDER_TYPE;
             List<String> ipPathList = zkClient.getChildren(servicePath);
             for (String ipPath : ipPathList) {
-                String serverIp = ipPath.split(IP_PATH_SEPRATOR)[0];
-                String serverPort = ipPath.split(IP_PATH_SEPRATOR)[1];
-                int weight = Integer.parseInt(ipPath.split(IP_PATH_SEPRATOR)[2]);
-                int workerThreads = Integer.parseInt(ipPath.split(IP_PATH_SEPRATOR)[3]);
-                String group = ipPath.split(IP_PATH_SEPRATOR)[4];
+                String serverIp = ipPath.split(IP_PATH_SEPARATE)[0];
+                String serverPort = ipPath.split(IP_PATH_SEPARATE)[1];
+                int weight = Integer.parseInt(ipPath.split(IP_PATH_SEPARATE)[2]);
+                int workerThreads = Integer.parseInt(ipPath.split(IP_PATH_SEPARATE)[3]);
+                String group = ipPath.split(IP_PATH_SEPARATE)[4];
 
                 List<ProviderService> providerServiceList = providerServiceMap.get(serviceName);
                 if (providerServiceList == null) {
@@ -288,7 +288,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
                     if (currentChildren == null) {
                         currentChildren = Lists.newArrayList();
                     }
-                    currentChildren = currentChildren.stream().map(s -> s.split(IP_PATH_SEPRATOR)[0]).collect(Collectors.toList());
+                    currentChildren = currentChildren.stream().map(s -> s.split(IP_PATH_SEPARATE)[0]).collect(Collectors.toList());
                     refreshServiceMetaDataMap(currentChildren);
                 }
             });
@@ -344,7 +344,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
 
                         //获取服务提供者信息
                         for (String provider : providers) {
-                            String[] providerNodeArr = provider.split(IP_PATH_SEPRATOR);
+                            String[] providerNodeArr = provider.split(IP_PATH_SEPARATE);
 
                             ProviderService providerService = new ProviderService();
                             providerService.setAppKey(appKey);

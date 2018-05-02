@@ -58,7 +58,7 @@ public class NettyServer {
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true)
-                    .handler(new LoggingHandler(LogLevel.INFO))
+//                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(handlerInitializer());
 
             try {
@@ -76,7 +76,7 @@ public class NettyServer {
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel ch) {
-                log.info("class: {}, method: {}", getClass(), Thread.currentThread().getStackTrace()[0].getMethodName());
+                log.debug("类: {}, 方法: {}", getClass(), Thread.currentThread().getStackTrace()[1].getMethodName());
                 ch.pipeline()
                         .addLast(new NettyDecoderHandler(RpcResponse.class, serializerType))
                         .addLast(new NettyEncoderHandler(serializerType))

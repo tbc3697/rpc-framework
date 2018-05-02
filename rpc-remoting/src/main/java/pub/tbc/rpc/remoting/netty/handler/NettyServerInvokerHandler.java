@@ -51,11 +51,13 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) {
+        log.debug("收到请求，来自：{}", ctx.channel().remoteAddress());
         if (ctx.channel().isWritable()) {
             // 从服务调用对象里获取服务提供者信息
             ProviderService metaDataModel = request.getProviderService();
             long consumeTimeOut = request.getInvokeTimeout();
+            String methodName = request.getInvokedMethodName();
 
             String serviceKey = metaDataModel.getServiceItf().getName();
 
@@ -66,7 +68,7 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
             List<ProviderService> localProviderCaches = registerCenter4Provider.getProviderServiceMap().get(serviceKey);
 
             ProviderService localProviderCache = localProviderCaches.stream()
-                    .filter(lpc -> metaDataModel.equals(lpc.getServiceMethod().getName()))
+                    .filter(lpc -> methodName.equals(lpc.getServiceMethod().getName())  ) //此处只用名称过滤存在问题，对于重载的方法无法区分
                     .findFirst()
                     .get();
             Object serviceObject = localProviderCache.getServiceObject();
@@ -111,7 +113,8 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        log.error("Throwable: {}", cause.getClass());
         log.error(cause.getMessage());
         ctx.close();
     }
