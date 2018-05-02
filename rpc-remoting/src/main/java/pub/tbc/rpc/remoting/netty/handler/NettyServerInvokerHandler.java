@@ -12,6 +12,7 @@ import pub.tbc.toolkit.core.EmptyUtil;
 import pub.tbc.toolkit.core.collect.Maps;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -50,6 +51,19 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
         return semaphore;
     }
 
+    /**
+     * 方法名匹配，并且方法参数都为空或者方法参数完全匹配
+     */
+    private boolean matchMethod(Method method, String methodName, Class<?>... methodParameters) {
+        if (methodName.equals(method.getName())) {
+            if (EmptyUtil.isEmpty(methodParameters) && EmptyUtil.isEmpty(method.getParameterTypes())) {
+                return true;
+            }
+            return Arrays.equals(method.getParameterTypes(), methodParameters);
+        }
+        return false;
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) {
         log.debug("收到请求，来自：{}", ctx.channel().remoteAddress());
@@ -68,7 +82,8 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
             List<ProviderService> localProviderCaches = registerCenter4Provider.getProviderServiceMap().get(serviceKey);
 
             ProviderService localProviderCache = localProviderCaches.stream()
-                    .filter(lpc -> methodName.equals(lpc.getServiceMethod().getName())  ) //此处只用名称过滤存在问题，对于重载的方法无法区分
+//                    .filter(lpc -> methodName.equals(lpc.getServiceMethod().getName()) ) //此处只用名称过滤存在问题，对于重载的方法无法区分
+                    .filter(lpc -> matchMethod(lpc.getServiceMethod(), methodName, request.getMethodParametersType()))
                     .findFirst()
                     .get();
             Object serviceObject = localProviderCache.getServiceObject();

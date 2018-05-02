@@ -66,6 +66,8 @@ public class RevokerProxyBeanFactory implements InvocationHandler {
                 .providerService(newProvider)
                 .invokeTimeout(timeout)
                 .invokedMethodName(method.getName())
+                // 问题修复：添加参数类型数组，以便服务提供者匹配方法
+                .methodParametersType(method.getParameterTypes())
                 .args(args)
 //                .appName()
                 .build();
