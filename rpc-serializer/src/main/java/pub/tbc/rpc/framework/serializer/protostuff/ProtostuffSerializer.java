@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by tbc on 2018/4/16.
  */
-public class ProtostuffSerializer implements Serialization {
+public class ProtostuffSerializer<T> implements Serialization<T> {
     private static Map<Class<?>, Schema<?>> cacheSchema = new ConcurrentHashMap<>();
     private static Objenesis objenesis = new ObjenesisStd(true);
 
@@ -30,7 +30,7 @@ public class ProtostuffSerializer implements Serialization {
     }
 
     @Override
-    public <T> byte[] serialize(T object) {
+    public byte[] serialize(T object) {
         Class<T> tClass = (Class<T>) object.getClass();
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         try {
@@ -42,7 +42,7 @@ public class ProtostuffSerializer implements Serialization {
     }
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> glass) {
+    public T deserialize(byte[] data, Class<T> glass) {
         try {
             T message = objenesis.newInstance(glass);
             Schema<T> schema = getSchema(glass);

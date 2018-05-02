@@ -7,10 +7,10 @@ import java.io.*;
 /**
  * Created by tbc on 2018/4/15.
  */
-public class DefaultJavaSerialzer implements Serialization {
+public class DefaultJavaSerializer<T> implements Serialization<T> {
 
     @Override
-    public <T> byte[] serialize(T object) {
+    public byte[] serialize(T object) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream)) {
             out.writeObject(object);
@@ -21,7 +21,7 @@ public class DefaultJavaSerialzer implements Serialization {
     }
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> glass) {
+    public T deserialize(byte[] data, Class<T> glass) {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         try (ObjectInputStream inputStream = new ObjectInputStream(byteArrayInputStream)) {
             return (T) inputStream.readObject();

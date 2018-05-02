@@ -12,10 +12,10 @@ import java.util.Objects;
 /**
  * Created by tbc on 2018/4/17.
  */
-public class HessionSerializer implements Serialization {
+public class HessionSerializer<T> implements Serialization<T> {
 
     @Override
-    public <T> byte[] serialize(T object) {
+    public byte[] serialize(T object) {
         Objects.requireNonNull(object);
 
         try {
@@ -29,7 +29,7 @@ public class HessionSerializer implements Serialization {
     }
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> glass) {
+    public T deserialize(byte[] data, Class<T> glass) {
         Objects.requireNonNull(data);
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         HessianInput hessianInput = new HessianInput(in);

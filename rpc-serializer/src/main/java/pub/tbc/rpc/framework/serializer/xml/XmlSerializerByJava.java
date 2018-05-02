@@ -10,9 +10,9 @@ import java.io.ByteArrayOutputStream;
 /**
  * Created by tbc on 2018/4/16.
  */
-public class XmlSerializerByJava implements Serialization {
+public class XmlSerializerByJava<T> implements Serialization<T> {
     @Override
-    public <T> byte[] serialize(T object) {
+    public byte[] serialize(T object) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (XMLEncoder xmlEncoder = new XMLEncoder(byteArrayOutputStream, "utf-8", true, 0)) {
             xmlEncoder.writeObject(object);
@@ -21,7 +21,7 @@ public class XmlSerializerByJava implements Serialization {
     }
 
     @Override
-    public <T> T deserialize(byte[] data, Class<T> glass) {
+    public T deserialize(byte[] data, Class<T> glass) {
         try (XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(data))) {
             return (T) xmlDecoder.readObject();
         }
