@@ -73,7 +73,6 @@ public class IPHelper {
 
 
     static {
-
         String ip = null;
         Enumeration allNetInterfaces;
         try {

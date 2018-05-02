@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
 import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler;
@@ -21,6 +22,7 @@ import static pub.tbc.toolkit.core.EmptyUtil.nonNull;
 /**
  * Created by tbc on 2018/4/19.
  */
+@Slf4j
 public class NettyServer {
     private static NettyServer nettyServer = new NettyServer();
 
@@ -40,6 +42,7 @@ public class NettyServer {
     public void start(int port) {
         synchronized (NettyServer.class) {
             if (checkStarted()) return;
+            log.info("Netty Server starting...");
             //
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup();
@@ -59,6 +62,7 @@ public class NettyServer {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            log.info("Netty Server started...");
 
         }
     }
@@ -67,6 +71,7 @@ public class NettyServer {
         return new ChannelInitializer() {
             @Override
             protected void initChannel(Channel ch) {
+                log.info("class: {}, method: {}", getClass(), Thread.currentThread().getStackTrace()[0].getMethodName());
                 ch.pipeline()
                         .addLast(new NettyDecoderHandler(RpcResponse.class, serializerType))
                         .addLast(new NettyEncoderHandler(serializerType))

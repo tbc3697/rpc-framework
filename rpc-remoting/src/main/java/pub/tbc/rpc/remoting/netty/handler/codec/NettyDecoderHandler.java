@@ -3,6 +3,7 @@ package pub.tbc.rpc.remoting.netty.handler.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.framework.serializer.SerializerEngine;
 import pub.tbc.rpc.framework.serializer.SerializerType;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author tbc on 2018/4/19.
  */
+@Slf4j
 public class NettyDecoderHandler extends ByteToMessageDecoder {
     // 解码对象类型Class
     private Class<?> genericClass;
@@ -20,6 +22,7 @@ public class NettyDecoderHandler extends ByteToMessageDecoder {
     private SerializerType serializerType;
 
     public NettyDecoderHandler(Class<?> genericClass, SerializerType serializerType) {
+        log.debug("init {}", getClass());
         this.genericClass = genericClass;
         this.serializerType = serializerType;
     }

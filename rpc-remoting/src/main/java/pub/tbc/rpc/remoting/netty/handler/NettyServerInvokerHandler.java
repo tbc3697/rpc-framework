@@ -23,6 +23,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
+    {
+        log.debug("init {}", getClass());
+    }
+
     // 服务端限流
     private static final Map<String, Semaphore> serviceKeySemaphoreMap = Maps.newConcurrentHashMap();
 
@@ -52,9 +56,7 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
             // 从服务调用对象里获取服务提供者信息
             ProviderService metaDataModel = request.getProviderService();
             long consumeTimeOut = request.getInvokeTimeout();
-            String methodName = request.getInvokedMethodName();
 
-            //
             String serviceKey = metaDataModel.getServiceItf().getName();
 
             Semaphore semaphore = getSemaphore(metaDataModel);
@@ -78,7 +80,7 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
                 // 利用semaphore实现限流
                 acquire = semaphore.tryAcquire(consumeTimeOut, TimeUnit.MILLISECONDS);
                 if (acquire) {
-                    //
+                    // 反射调用实际提供者方法，结果赋给result变量
                     result = method.invoke(serviceObject, request.getArgs());
                 }
             } catch (Exception e) {
@@ -89,14 +91,14 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
                 }
             }
 
-            // 根据服务调用结果组装服务调用对象
+            // 根据服务调用结果组装服务响应对象
             RpcResponse response = RpcResponse.builder()
                     .invokeTimeout(consumeTimeOut)
                     .uniqueKey(request.getUniqueKey())
                     .result(result)
                     .build();
 
-            // 写入缓冲区，发送到消费端
+            // 将服务响应对象写入缓冲区，发送到消费端
             ctx.writeAndFlush(response);
         } else {
             log.error("---------- channel closed! ------------");

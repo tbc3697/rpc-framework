@@ -15,10 +15,6 @@ import java.util.Properties;
  * @version $Id$
  */
 public class RpcConfigHelper {
-    public static void main(String[] args) {
-        System.out.println("a");
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(RpcConfigHelper.class);
 
     private static final String PROPERTY_CLASSPATH = "rpc-simple.properties";

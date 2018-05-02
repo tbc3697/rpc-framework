@@ -3,16 +3,19 @@ package pub.tbc.rpc.remoting.netty.handler.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.framework.serializer.SerializerEngine;
 import pub.tbc.rpc.framework.serializer.SerializerType;
 
 /**
  * Created by tbc on 2018/4/19.
  */
+@Slf4j
 public class NettyEncoderHandler extends MessageToByteEncoder {
     private SerializerType serializerType;
 
     public NettyEncoderHandler(SerializerType serializerType) {
+        log.debug("init {}", getClass());
         this.serializerType = serializerType;
     }
 

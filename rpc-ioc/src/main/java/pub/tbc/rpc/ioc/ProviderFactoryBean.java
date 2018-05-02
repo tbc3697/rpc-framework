@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import pub.tbc.rpc.common.ProviderService;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * Created by tbc on 2018/4/17.
  */
 @Data
+@Slf4j
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,6 +69,7 @@ public class ProviderFactoryBean implements FactoryBean, InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
+        log.info("class: {}, method: {}", getClass(), "afterPropertiesSet");
         // 启动Netty服务端
         NettyServer.singleton().start(Integer.parseInt(serverPort));
 
