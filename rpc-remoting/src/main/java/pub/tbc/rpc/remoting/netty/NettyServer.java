@@ -9,6 +9,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.NettyRuntime;
+import io.netty.util.internal.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
@@ -16,6 +18,7 @@ import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyDecoderHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyEncoderHandler;
 import pub.tbc.rpc.framework.serializer.SerializerType;
+import pub.tbc.toolkit.core.thread.ExecutorFactory;
 
 import static pub.tbc.toolkit.core.EmptyUtil.nonNull;
 
@@ -44,8 +47,9 @@ public class NettyServer {
             if (checkStarted()) return;
             log.info("Netty Server starting...");
             //
-            bossGroup = new NioEventLoopGroup(1);
-            workerGroup = new NioEventLoopGroup();
+            int cpu2 = Math.max(1, SystemPropertyUtil.getInt("io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2));
+            bossGroup = new NioEventLoopGroup(1, ExecutorFactory.createThreadFactory("boss"));
+            workerGroup = new NioEventLoopGroup(cpu2, ExecutorFactory.createThreadFactory("worker-%d"));
 
             //
             ServerBootstrap b = new ServerBootstrap();
@@ -58,6 +62,7 @@ public class NettyServer {
                     .childHandler(handlerInitializer());
 
             try {
+                log.debug("netty server bind port: {}", port);
                 b.bind(port).sync().channel();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

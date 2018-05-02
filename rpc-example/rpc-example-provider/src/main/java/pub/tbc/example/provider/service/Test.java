@@ -14,6 +14,7 @@ import pub.tbc.rpc.ioc.ProviderFactoryBean;
 @Configuration
 public class Test {
     public static void main(String[] args) {
+        LoggerManager.logSetting();
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("pub.tbc.example.provider.service");
         System.out.println("provider started...");
 

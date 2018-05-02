@@ -11,7 +11,7 @@ import pub.tbc.rpc.common.model.RpcResponse;
  */
 @Slf4j
 public class NettyClientInvokerHandler extends SimpleChannelInboundHandler<RpcResponse> {
-    {
+    public NettyClientInvokerHandler() {
         log.debug("init {}", getClass());
     }
 

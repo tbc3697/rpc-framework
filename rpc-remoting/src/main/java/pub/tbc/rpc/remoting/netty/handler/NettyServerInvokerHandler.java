@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    {
+    public NettyServerInvokerHandler() {
         log.debug("init {}", getClass());
     }
 
