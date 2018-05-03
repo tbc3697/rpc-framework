@@ -3,6 +3,7 @@ package pub.tbc.prc.example.consumer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pub.tbc.rpc.example.api.service.HaService;
 import pub.tbc.rpc.example.api.service.HelloRpc;
 import pub.tbc.rpc.example.api.LoggerManager;
 import pub.tbc.rpc.example.api.service.SecondService;
@@ -38,6 +39,12 @@ public class ConsumerExample {
             Sleeps.seconds(5);
         }
 
+        HaService haService = context.getBean("haService", HaService.class);
+        for (int i = 0; i < 5; i++) {
+            System.out.println(haService.ha());
+            Sleeps.seconds(5);
+        }
+
     }
 
 
@@ -56,6 +63,17 @@ public class ConsumerExample {
     public RevokerFactoryBean secondService() {
         return RevokerFactoryBean.builder()
                 .targetInterface(SecondService.class)
+                .loadBalanceName("random")
+                .remoteAppKey("rpc-example-provider")
+                .groupName("default-group")
+                .timeout(4000)
+                .build();
+    }
+
+    @Bean("haService")
+    public RevokerFactoryBean haService() {
+        return RevokerFactoryBean.builder()
+                .targetInterface(HaService.class)
                 .loadBalanceName("random")
                 .remoteAppKey("rpc-example-provider")
                 .groupName("default-group")
