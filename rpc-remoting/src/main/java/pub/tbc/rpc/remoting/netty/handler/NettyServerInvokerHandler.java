@@ -15,7 +15,8 @@ import java.util.List;
 
 /**
  * 实际业务处理器，负责查找实际服务提供对象，并进行方法调用
- * @author  tbc on 2018/5/6.
+ *
+ * @author tbc on 2018/5/6.
  */
 @Slf4j
 public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRequest> {
@@ -53,7 +54,7 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
             List<ProviderService> localProviderCaches = registerCenter4Provider.getProviderServiceMap().get(serviceKey);
 
             ProviderService localProviderCache = localProviderCaches.stream()
-//                    .filter(lpc -> methodName.equals(lpc.getServiceMethod().getName()) ) //此处只用名称过滤存在问题，对于重载的方法无法区分
+                    //只用名称过滤的话存在问题，若服务中存在重载方法无法区分
                     .filter(lpc -> matchMethod(lpc.getServiceMethod(), methodName, request.getMethodParametersType()))
                     .findFirst()
                     .get();

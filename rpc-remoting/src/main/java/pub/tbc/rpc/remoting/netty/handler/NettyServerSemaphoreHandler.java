@@ -28,37 +28,26 @@ public class NettyServerSemaphoreHandler extends SimpleChannelInboundHandler<Rpc
     // 服务端限流
     private static final Map<String, Semaphore> serviceKeySemaphoreMap = Maps.newConcurrentHashMap();
 
+    private Semaphore initSemaphore(String serviceKey, int workerThread) {
+        synchronized (serviceKeySemaphoreMap) {
+            Semaphore semaphore = serviceKeySemaphoreMap.get(serviceKey);
+            if (EmptyUtil.isNull(semaphore)) {
+                semaphore = new Semaphore(workerThread);
+                serviceKeySemaphoreMap.put(serviceKey, semaphore);
+            }
+            return semaphore;
+        }
+    }
+
 
     private Semaphore getSemaphore(ProviderService metaDataModel) {
-        //
         String serviceKey = metaDataModel.getServiceItf().getName();
-        // 获取限流工具类
-        int workerThread = metaDataModel.getWorkerThreads();
         Semaphore semaphore = serviceKeySemaphoreMap.get(serviceKey);
         // 初始化流控基础设施semaphore
         if (EmptyUtil.isNull(semaphore)) {
-            synchronized (serviceKeySemaphoreMap) {
-                semaphore = serviceKeySemaphoreMap.get(serviceKey);
-                if (EmptyUtil.isNull(semaphore)) {
-                    semaphore = new Semaphore(workerThread);
-                    serviceKeySemaphoreMap.put(serviceKey, semaphore);
-                }
-            }
+            return initSemaphore(serviceKey, metaDataModel.getWorkerThreads());
         }
         return semaphore;
-    }
-
-    /**
-     * 方法名匹配，并且方法参数都为空或者方法参数完全匹配
-     */
-    private boolean matchMethod(Method method, String methodName, Class<?>... methodParameters) {
-        if (methodName.equals(method.getName())) {
-            if (methodParameters.length == 0 && method.getParameterTypes().length == 0) {
-                return true;
-            }
-            return Arrays.equals(method.getParameterTypes(), methodParameters);
-        }
-        return false;
     }
 
     @Override
@@ -79,6 +68,7 @@ public class NettyServerSemaphoreHandler extends SimpleChannelInboundHandler<Rpc
                 if (acquire) {
                     // 往下传，交给真正处理服务端业务调用的处理器NettyServerInvokerHandler
                     ctx.fireChannelRead(request);
+                    return;
                 }
             } catch (Exception e) {
                 result = e;
