@@ -64,11 +64,11 @@ public class NettyChannelPoolFactory {
             protected void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline()
                         // netty encoder
-                        .addLast(new NettyEncoderHandler(serializeType))
+                        .addLast("EncoderHandler", new NettyEncoderHandler(serializeType))
                         // netty decoder
-                        .addLast(new NettyDecoderHandler(RpcResponse.class, serializeType))
+                        .addLast("DecoderHandler", new NettyDecoderHandler(RpcResponse.class, serializeType))
                         // client handler
-                        .addLast(new NettyClientInvokerHandler());
+                        .addLast("ClientInvokerHandler", new NettyClientInvokerHandler());
             }
         };
     }

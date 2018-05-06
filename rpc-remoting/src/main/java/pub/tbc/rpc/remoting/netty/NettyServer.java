@@ -12,7 +12,9 @@ import io.netty.util.internal.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
+import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler;
 import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler0;
+import pub.tbc.rpc.remoting.netty.handler.NettyServerSemaphoreHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyDecoderHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyEncoderHandler;
 import pub.tbc.rpc.framework.serializer.SerializerType;
@@ -76,9 +78,10 @@ public class NettyServer {
             protected void initChannel(Channel ch) {
                 log.debug("类: {}, 方法: {}", getClass(), Thread.currentThread().getStackTrace()[1].getMethodName());
                 ch.pipeline()
-                        .addLast(new NettyDecoderHandler(RpcResponse.class, serializerType))
-                        .addLast(new NettyEncoderHandler(serializerType))
-                        .addLast(new NettyServerInvokerHandler0());
+                        .addLast("RpcDecoder", new NettyDecoderHandler(RpcResponse.class, serializerType))
+                        .addLast("RpcEncoder", new NettyEncoderHandler(serializerType))
+                        .addLast("SemaphoreHandler", new NettyServerSemaphoreHandler())
+                        .addLast("ServerInvokerHandler", new NettyServerInvokerHandler());
             }
         };
     }
