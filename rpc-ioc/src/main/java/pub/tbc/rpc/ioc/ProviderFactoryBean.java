@@ -69,7 +69,7 @@ public class ProviderFactoryBean implements FactoryBean, InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.info("类: {}, 方法: {}", getClass(), "afterPropertiesSet");
+        log.info("初始化: spring -> afterPropertiesSet");
         // 启动Netty服务端
         NettyServer.singleton().start(Integer.parseInt(serverPort));
 

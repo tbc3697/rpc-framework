@@ -12,12 +12,11 @@ import io.netty.util.internal.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
+import pub.tbc.rpc.framework.serializer.SerializerType;
 import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler;
-import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler0;
 import pub.tbc.rpc.remoting.netty.handler.NettyServerSemaphoreHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyDecoderHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyEncoderHandler;
-import pub.tbc.rpc.framework.serializer.SerializerType;
 import pub.tbc.toolkit.core.thread.ExecutorFactory;
 
 import static pub.tbc.toolkit.core.EmptyUtil.nonNull;
@@ -41,15 +40,23 @@ public class NettyServer {
     }
 
 
+    private int workerThreadCount() {
+        //
+        int cpu2 = Math.max(1, SystemPropertyUtil.getInt("io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2));
+
+        cpu2 = 4;
+
+        return cpu2;
+    }
+
+
     // 服务有多个，每发布一个服务都要调用该方法，但netty-server只要启动一次，用同步关键字保护，并调用checkStarted方法检查是否已启动
     public void start(int port) {
         synchronized (NettyServer.class) {
             if (checkStarted()) return;
             log.info("Netty Server starting...");
-            //
-            int cpu2 = Math.max(1, SystemPropertyUtil.getInt("io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2));
             bossGroup = new NioEventLoopGroup(1, ExecutorFactory.createThreadFactory("boss"));
-            workerGroup = new NioEventLoopGroup(cpu2, ExecutorFactory.createThreadFactory("worker-%d"));
+            workerGroup = new NioEventLoopGroup(workerThreadCount(), ExecutorFactory.createThreadFactory("worker-%d"));
 
             //
             ServerBootstrap b = new ServerBootstrap();
@@ -77,6 +84,7 @@ public class NettyServer {
             @Override
             protected void initChannel(Channel ch) {
                 log.debug("类: {}, 方法: {}", getClass(), Thread.currentThread().getStackTrace()[1].getMethodName());
+                log.debug("pipeline: {}", ch.pipeline().getClass().getName() + "@" + Integer.toString(hashCode()));
                 ch.pipeline()
                         .addLast("RpcDecoder", new NettyDecoderHandler(RpcResponse.class, serializerType))
                         .addLast("RpcEncoder", new NettyEncoderHandler(serializerType))

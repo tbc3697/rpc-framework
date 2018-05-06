@@ -13,6 +13,8 @@ import pub.tbc.rpc.example.api.LoggerManager;
 import pub.tbc.rpc.example.api.service.SecondService;
 import pub.tbc.rpc.ioc.ProviderFactoryBean;
 
+import java.util.Random;
+
 /**
  * Created by tbc on 2018/5/2.
  */
@@ -21,7 +23,7 @@ import pub.tbc.rpc.ioc.ProviderFactoryBean;
 public class ProviderExample {
     public static void main(String[] args) {
         LoggerManager.logSetting();
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("pub.tbc.example.provider");
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("pub.tbc.example.provider", "pub.tbc.rpc.remoting.netty");
         System.out.println("provider started...");
 
     }
@@ -58,7 +60,7 @@ public class ProviderExample {
 
     @Bean("haService")
     public ProviderFactoryBean haService() {
-        log.info("初始化 ProviderFactoryBean - secondService");
+        log.info("初始化 ProviderFactoryBean - haService");
         return ProviderFactoryBean.builder()
                 .appKey("rpc-example-provider")
                 .serviceItf(HaService.class)

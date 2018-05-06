@@ -9,8 +9,6 @@ import pub.tbc.rpc.common.model.RpcResponse;
 import pub.tbc.toolkit.core.EmptyUtil;
 import pub.tbc.toolkit.core.collect.Maps;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -52,13 +50,13 @@ public class NettyServerSemaphoreHandler extends SimpleChannelInboundHandler<Rpc
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) {
-        log.debug("收到请求，来自：{}", ctx.channel().remoteAddress());
         if (ctx.channel().isWritable()) {
             // 从服务调用对象里获取服务提供者信息
             ProviderService metaDataModel = request.getProviderService();
             long consumeTimeOut = request.getInvokeTimeout();
 
             Semaphore semaphore = getSemaphore(metaDataModel);
+            log.debug("semaphore queue length: {}", semaphore.getQueueLength());
 
             boolean acquire = false;
             Object result = null;

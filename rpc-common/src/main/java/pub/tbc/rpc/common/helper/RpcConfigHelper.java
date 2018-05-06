@@ -33,6 +33,9 @@ public class RpcConfigHelper {
     private static int channelConnectSize;
     // 应用名称
     private static String appName;
+    // 服务监听端口
+    @Getter
+    private static int serverPort;
 
     //////////////////////////
     @Getter
@@ -62,6 +65,7 @@ public class RpcConfigHelper {
             serializeType = EmptyUtil.requireNonNull(SerializerType.queryByType(properties.getProperty("serialize_type")), "serializeType is null");
             appName = properties.getProperty("app_name");
             loadBalance = properties.getProperty("load_balance");
+            serverPort = Integer.parseInt(properties.getProperty("rpc.server.port"));
 
         } catch (Throwable t) {
             logger.warn("load " + PROPERTY_CLASSPATH + " properties failed.", t);
