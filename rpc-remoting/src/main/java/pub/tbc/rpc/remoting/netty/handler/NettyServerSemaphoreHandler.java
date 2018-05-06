@@ -6,22 +6,46 @@ import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.ProviderService;
 import pub.tbc.rpc.common.model.RpcRequest;
 import pub.tbc.rpc.common.model.RpcResponse;
-import pub.tbc.rpc.registry.IRegisterCenter4Provider;
-import pub.tbc.rpc.registry.zk.RegisterCenter;
+import pub.tbc.toolkit.core.EmptyUtil;
+import pub.tbc.toolkit.core.collect.Maps;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 实际业务处理器，负责查找实际服务提供对象，并进行方法调用
- * @author  tbc on 2018/5/6.
+ * 限流处理器
  */
 @Slf4j
-public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class NettyServerSemaphoreHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    public NettyServerInvokerHandler() {
+    public NettyServerSemaphoreHandler() {
         log.debug("init {}", getClass());
+    }
+
+    // 服务端限流
+    private static final Map<String, Semaphore> serviceKeySemaphoreMap = Maps.newConcurrentHashMap();
+
+
+    private Semaphore getSemaphore(ProviderService metaDataModel) {
+        //
+        String serviceKey = metaDataModel.getServiceItf().getName();
+        // 获取限流工具类
+        int workerThread = metaDataModel.getWorkerThreads();
+        Semaphore semaphore = serviceKeySemaphoreMap.get(serviceKey);
+        // 初始化流控基础设施semaphore
+        if (EmptyUtil.isNull(semaphore)) {
+            synchronized (serviceKeySemaphoreMap) {
+                semaphore = serviceKeySemaphoreMap.get(serviceKey);
+                if (EmptyUtil.isNull(semaphore)) {
+                    semaphore = new Semaphore(workerThread);
+                    serviceKeySemaphoreMap.put(serviceKey, semaphore);
+                }
+            }
+        }
+        return semaphore;
     }
 
     /**
@@ -44,31 +68,24 @@ public class NettyServerInvokerHandler extends SimpleChannelInboundHandler<RpcRe
             // 从服务调用对象里获取服务提供者信息
             ProviderService metaDataModel = request.getProviderService();
             long consumeTimeOut = request.getInvokeTimeout();
-            String methodName = request.getInvokedMethodName();
 
-            String serviceKey = metaDataModel.getServiceItf().getName();
+            Semaphore semaphore = getSemaphore(metaDataModel);
 
-            // 服务注册中心
-            IRegisterCenter4Provider registerCenter4Provider = RegisterCenter.singleton();
-            List<ProviderService> localProviderCaches = registerCenter4Provider.getProviderServiceMap().get(serviceKey);
-
-            ProviderService localProviderCache = localProviderCaches.stream()
-//                    .filter(lpc -> methodName.equals(lpc.getServiceMethod().getName()) ) //此处只用名称过滤存在问题，对于重载的方法无法区分
-                    .filter(lpc -> matchMethod(lpc.getServiceMethod(), methodName, request.getMethodParametersType()))
-                    .findFirst()
-                    .get();
-            Object serviceObject = localProviderCache.getServiceObject();
-
-            // 利用反射发起调用
-            Method method = localProviderCache.getServiceMethod();
-            Object result = null;
             boolean acquire = false;
-
+            Object result = null;
             try {
-                // 反射调用实际提供者方法，结果赋给result变量
-                result = method.invoke(serviceObject, request.getArgs());
+                // 利用semaphore实现限流
+                acquire = semaphore.tryAcquire(consumeTimeOut, TimeUnit.MILLISECONDS);
+                if (acquire) {
+                    // 往下传，交给真正处理服务端业务调用的处理器NettyServerInvokerHandler
+                    ctx.fireChannelRead(request);
+                }
             } catch (Exception e) {
                 result = e;
+            } finally {
+                if (acquire) {
+                    semaphore.release();
+                }
             }
 
             // 根据服务调用结果组装服务响应对象

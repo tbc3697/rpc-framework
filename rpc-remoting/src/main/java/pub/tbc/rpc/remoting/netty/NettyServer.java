@@ -7,14 +7,12 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.NettyRuntime;
 import io.netty.util.internal.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import pub.tbc.rpc.common.helper.RpcConfigHelper;
 import pub.tbc.rpc.common.model.RpcResponse;
-import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler;
+import pub.tbc.rpc.remoting.netty.handler.NettyServerInvokerHandler0;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyDecoderHandler;
 import pub.tbc.rpc.remoting.netty.handler.codec.NettyEncoderHandler;
 import pub.tbc.rpc.framework.serializer.SerializerType;
@@ -80,7 +78,7 @@ public class NettyServer {
                 ch.pipeline()
                         .addLast(new NettyDecoderHandler(RpcResponse.class, serializerType))
                         .addLast(new NettyEncoderHandler(serializerType))
-                        .addLast(new NettyServerInvokerHandler());
+                        .addLast(new NettyServerInvokerHandler0());
             }
         };
     }
