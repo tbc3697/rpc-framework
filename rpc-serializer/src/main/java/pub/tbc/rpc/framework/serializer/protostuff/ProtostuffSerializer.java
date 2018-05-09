@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by tbc on 2018/4/16.
+ *
+ * @author tbc
+ * @date 2018/4/16
  */
 public class ProtostuffSerializer<T> implements Serialization<T> {
     private static Map<Class<?>, Schema<?>> cacheSchema = new ConcurrentHashMap<>();

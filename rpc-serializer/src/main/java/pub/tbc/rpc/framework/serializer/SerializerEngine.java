@@ -14,7 +14,7 @@ import static pub.tbc.toolkit.core.exception.ExceptionUtil.noException;
  * Created by tbc on 2018/4/16.
  */
 public class SerializerEngine {
-    public static final Map<SerializerType, Serialization> serializerMap;// = Maps.newConcurrentHashMap();
+    public static final Map<SerializerType, Serialization> serializerMap;
 
     static {
         serializerMap = new MapBuilder<SerializerType, Serialization>()
