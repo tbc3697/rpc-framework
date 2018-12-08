@@ -10,6 +10,13 @@ import java.util.List;
  * 源地址哈希算法
  */
 public class HashLoadBalance implements LoadBalance {
+    /**
+     * 扰动函数: 抄自HashMap
+     */
+    private int hash(int hashCode) {
+        return (hashCode == 0) ? 0 : hashCode ^ (hashCode >>> 16);
+    }
+
     @Override
     public ProviderService select(List<ProviderService> providerServices) {
         // 获取调用方IP
@@ -18,6 +25,7 @@ public class HashLoadBalance implements LoadBalance {
         int hashCode = localIP.hashCode();
         // 获取服务器列表大小
         int size = providerServices.size();
-        return providerServices.get(hashCode % size);
+        // 使用按位与算法获取下标 - 抄自HashMap
+        return providerServices.get((size - 1) & hash(hashCode));
     }
 }
